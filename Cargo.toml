@@ -10,3 +10,4 @@ clap = { version = "*", features = ["derive","color"] }
 toml = "0.5.8"
 serde = "1.0"
 serde_derive = "1.0"
+csv = "1.1"

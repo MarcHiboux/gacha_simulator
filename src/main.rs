@@ -7,10 +7,14 @@ use std::collections::BTreeMap;
 //use std::fmt::{self, Error, Formatter};
 use std::fs;
 use std::path::Path;
-use std::ptr::null;
-use std::string;
+//use std::ptr::null;
+//use std::string;
 use std::{thread, time};
 //use toml::*; // Crate pour .toml
+
+//tutorial-setup-01.rs
+// Import the standard library's I/O module so we can read from stdin.
+use std::io;
 
 #[derive(Serialize, Deserialize, Debug, Clone, Copy)]
 struct OrbProfile {
@@ -87,6 +91,17 @@ fn main() {
     // Le nom du fichier est maintenant une operation dans un match
     // os_path.push(r"\Orb_Treasury");
     // path_string = os_path.into_string().unwrap();
+
+    //
+    let mut csv_reader_var = csv::Reader::from_reader(io::stdin());
+
+    for result in csv_reader_var.records() {
+        // An error may occur, so abort the program in an unfriendly way.
+        // We will make this more friendly later!
+        let record = result.expect("a CSV record");
+        // Print a debug version of the record.
+        println!("{:?}", record);
+    }
 
     match prog_argument.actual_focus_characters {
         None => {
