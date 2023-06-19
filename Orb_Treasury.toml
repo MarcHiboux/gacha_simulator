@@ -1,0 +1,4 @@
+[Treasury]
+orb_treasury = 500
+maximum_hero_pull_potential = 125
+optimal_hero_pull_potential = 100
