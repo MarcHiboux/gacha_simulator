@@ -15,6 +15,8 @@ use std::{thread, time};
 //tutorial-setup-01.rs
 // Import the standard library's I/O module so we can read from stdin.
 use std::io;
+use std::error::Error;
+use csv;
 
 #[derive(Serialize, Deserialize, Debug, Clone, Copy)]
 struct OrbProfile {
@@ -86,23 +88,17 @@ fn main() {
 
     // apparement il faut trouver le pathbuf du repertoir, suivi par une transition en os_string (?) suivi par une transition en string?
     let path_string: String;
+    let path_string_csv_reader: String;
     let path = std::env::current_dir();
     let mut os_path = path.expect("should be a directory").into_os_string();
+    let mut csv_reader_var; 
+    let mut os_path_csv_reader = std::env::current_dir().expect("should be a directory").into_os_string();
     // Le nom du fichier est maintenant une operation dans un match
     // os_path.push(r"\Orb_Treasury");
     // path_string = os_path.into_string().unwrap();
 
     //
-    let mut csv_reader_var = csv::Reader::from_reader(io::stdin());
-
-    for result in csv_reader_var.records() {
-        // An error may occur, so abort the program in an unfriendly way.
-        // We will make this more friendly later!
-        let record = result.expect("a CSV record");
-        // Print a debug version of the record.
-        println!("{:?}", record);
-    }
-
+    
     match prog_argument.actual_focus_characters {
         None => {
             prog_argument.actual_focus_characters = Some(1);
@@ -135,19 +131,42 @@ fn main() {
         Some(ref _t) => {}
     }
 
+    //os_path_csv_reader
     match &prog_argument.database {
         None => {
             os_path.push(r"\Orb_Treasury");
             os_path.push(r".toml");
             path_string = os_path.into_string().unwrap();
+            os_path_csv_reader.push(r"\Orb_Treasury");
+            os_path_csv_reader.push(r".csv");
+            csv_reader_var = csv::Reader::from_path(&os_path_csv_reader);
+            path_string_csv_reader = os_path_csv_reader.into_string().unwrap();
         }
         Some(t) => {
             os_path.push(r"\");
             os_path.push(t);
             os_path.push(r".toml");
             path_string = os_path.into_string().unwrap();
+
+            os_path_csv_reader.push(r"\");
+            os_path_csv_reader.push(t);
+            os_path_csv_reader.push(r".csv");
+            csv_reader_var = csv::Reader::from_path(&os_path_csv_reader);
+            path_string_csv_reader = os_path_csv_reader.into_string().unwrap();
         }
     }
+
+
+    ;
+
+    for result in csv_reader_var {
+        // An error may occur, so abort the program in an unfriendly way.
+        // We will make this more friendly later!
+        let record = result;
+        // Print a debug version of the record.
+        println!("{:?}", record);
+    }
+
 
     // println!("{}", Path::new(&path_string).exists());
 
