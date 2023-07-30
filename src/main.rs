@@ -16,7 +16,7 @@ use std::{thread, time};
 // Import the standard library's I/O module so we can read from stdin.
 use std::io;
 use std::error::Error;
-use csv;
+use csv::Writer;
 
 #[derive(Serialize, Deserialize, Debug, Clone, Copy)]
 struct OrbProfile {
@@ -382,8 +382,10 @@ fn main() {
                         let mut pity_character_tracker: u32 = 0;
                         let mut pity_character_no_summon_chance: f32 = 
                             1.00 - (pity_rate_tracker / 100.0);
+
                         
                         while orb_stack_5 >= 5 {
+
                             if ((favored_unit_summoned_once.cumulated_no_summon_chance) * 100.00)
                                 >= 99.0
                             {
@@ -478,6 +480,19 @@ fn main() {
                             //         );
                             //     }
                             // }
+
+                            fn csv_writer_builder() -> Result<(), Box<dyn Error>> {
+                                let mut csv_writer: Writer<T> = Writer::from_path("analysis_report.csv");
+                                csv_writer?.write_record(&["Character summoned", "% chance for favored character", "Tenth of the total summon", "Pity Breaker Count"])?;
+                                csv_writer?.flush()?;
+                                Ok(())
+                            }
+                            csv_writer.write_record(&
+                                [current_character_summoned.to_string(), 
+                                (current_summon_rate * 100.0).to_string(), 
+                                (current_character_summoned as u32 / min_pulls_for_eleven_heroes + 1).to_string(), 
+                                pity_character_tracker.to_string()]
+                            );
                         }
 
                         println!(
@@ -616,3 +631,10 @@ fn interpret_output(
         }
     }
 }
+
+// fn csv_writer_builder() -> Result<(), Box<dyn Error>> {
+//     let mut csv_writer = Writer::from_path("analysis_report.csv");
+//     csv_writer?.write_record(&["Character summoned", "% chance for favored character", "Tenth of the total summon", "Pity Breaker Count"])?;
+//     csv_writer?.flush()?;
+//     Ok(())
+// }
