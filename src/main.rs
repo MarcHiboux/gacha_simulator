@@ -383,6 +383,9 @@ fn main() {
                         let mut pity_character_no_summon_chance: f32 = 
                             1.00 - (pity_rate_tracker / 100.0);
 
+
+                        let mut csv_vector: Vec<String> = Vec::new();
+                        let mut csv_vector_tenth = 1;
                         
                         while orb_stack_5 >= 5 {
 
@@ -481,19 +484,24 @@ fn main() {
                             //     }
                             // }
 
-                            fn csv_writer_builder() -> Result<(), Box<dyn Error>> {
-                                let mut csv_writer: Writer<T> = Writer::from_path("analysis_report.csv");
-                                csv_writer?.write_record(&["Character summoned", "% chance for favored character", "Tenth of the total summon", "Pity Breaker Count"])?;
-                                csv_writer?.flush()?;
-                                Ok(())
-                            }
-                            csv_writer.write_record(&
-                                [current_character_summoned.to_string(), 
-                                (current_summon_rate * 100.0).to_string(), 
-                                (current_character_summoned as u32 / min_pulls_for_eleven_heroes + 1).to_string(), 
-                                pity_character_tracker.to_string()]
+                            
+
+
+                            csv_vector.push(
+                                "\n".to_owned() +
+                                &(current_character_summoned as u32 - 1).to_string() + "," +
+                                &(current_summon_rate * 100.0).to_string() + "," +
+                                &csv_vector_tenth.to_string() + "," +
+                                &pity_character_tracker.to_string()
                             );
+
+                            if (current_character_summoned as u32 - 1) % min_pulls_for_eleven_heroes == 0 {
+                                csv_vector_tenth += 1;
+                            }
+                            
                         }
+
+                        csv_writer_builder(csv_vector);
 
                         println!(
                             "\n\
@@ -632,9 +640,17 @@ fn interpret_output(
     }
 }
 
-// fn csv_writer_builder() -> Result<(), Box<dyn Error>> {
-//     let mut csv_writer = Writer::from_path("analysis_report.csv");
-//     csv_writer?.write_record(&["Character summoned", "% chance for favored character", "Tenth of the total summon", "Pity Breaker Count"])?;
-//     csv_writer?.flush()?;
-//     Ok(())
-// }
+fn csv_writer_builder(T: Vec<String>) -> Result<(), Box<dyn Error>> {
+    let mut csv_writer = Writer::from_path("analysis_report.csv");
+
+    let mut csv_writers_string: String = "Character summoned, % chance for favored character, Tenth of the total summon, Pity Breaker Count".to_string(); 
+    //csv_writer?.write_record(&["Character summoned", "% chance for favored character", "Tenth of the total summon", "Pity Breaker Count"])?;
+    //csv_writer?.write_record(T)?;
+    for i in &T {
+        // csv_writer?.write_record(i.to_string())?;
+        csv_writers_string = csv_writers_string + &i.to_string();        
+    }
+
+    csv_writer?.write_record(&[csv_writers_string])?;
+    Ok(())
+}
