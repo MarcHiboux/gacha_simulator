@@ -403,30 +403,7 @@ fn main() {
                                     1.00 - (pity_rate_tracker / 100.0);
                             }
 
-                            if ((pity_character_no_summon_chance) )
-                                <= 0.01
-                            {
-                                //println!("{}th summon, current summon rate is {}, whereas the cumulated no summon chance is {}", current_character_summoned, current_summon_rate, favored_unit_summoned_once.cumulated_no_summon_chance);
-                                current_summon_rate = real_character_rate;
-                                favored_unit_summoned_once.cumulated_no_summon_chance =
-                                    1.0 - real_character_rate;
-                                
-                                pity_character_tracker += 1;
-                                pity_rate_tracker = abbr_original_rate / (abbr_banner_characters - 1.0 );
-                                pity_character_no_summon_chance = 
-                                    1.00 - (pity_rate_tracker / 100.0);
-
-                                    println!("Practically assured pity character\n\
-                                    {} pity {} so far!", 
-                                    pity_character_tracker,
-                                    match pity_character_tracker {
-                                        0 => "Character",
-                                        1 => "Character",
-                                        2_u32..=u32::MAX => "Characters"
-                                    });
-                                thread::sleep(time::Duration::from_secs_f32(1.0));
-                                
-                            }
+                            
 
                             println!(
                                 "\n\
@@ -484,7 +461,30 @@ fn main() {
                             //     }
                             // }
 
-                            
+                            if ((pity_character_no_summon_chance) )
+                                <= 0.01
+                            {
+                                //println!("{}th summon, current summon rate is {}, whereas the cumulated no summon chance is {}", current_character_summoned, current_summon_rate, favored_unit_summoned_once.cumulated_no_summon_chance);
+                                current_summon_rate = real_character_rate;
+                                favored_unit_summoned_once.cumulated_no_summon_chance =
+                                    1.0 - real_character_rate;
+                                
+                                pity_character_tracker += 1;
+                                pity_rate_tracker = abbr_original_rate / (abbr_banner_characters - 1.0 );
+                                pity_character_no_summon_chance = 
+                                    1.00 - (pity_rate_tracker / 100.0);
+
+                                    println!("Practically assured pity character\n\
+                                    {} pity {} so far!", 
+                                    pity_character_tracker,
+                                    match pity_character_tracker {
+                                        0 => "Character",
+                                        1 => "Character",
+                                        2_u32..=u32::MAX => "Characters"
+                                    });
+                                thread::sleep(time::Duration::from_secs_f32(1.0));
+                                
+                            }
 
 
                             csv_vector.push(
